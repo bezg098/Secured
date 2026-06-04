@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<div style="max-width:400px; margin:60px auto;">
+  <div class="card">
+    <h1 style="text-align:center; margin-bottom:4px;">Create account</h1>
+    <p class="text-muted" style="text-align:center; margin-bottom:24px;">Join your team on Secured</p>
+    <form method="POST">
+      <label>Username
+        <input type="text" name="username" required autofocus>
+      </label>
+      <label>Password
+        <input type="password" name="password" required minlength="8">
+      </label>
+      <button class="btn btn-primary" style="width:100%; margin-top:22px;">Create account</button>
+    </form>
+    <p class="text-muted" style="text-align:center; margin-top:16px;">
+      Already have an account? <a href="/login" style="color:#1a3a5c;">Sign in</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
