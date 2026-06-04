@@ -10,11 +10,11 @@ A secure internal web application for tracking and rotating credentials (API key
 
 | Member | Role |
 |--------|------|
-| Bez    | Project Lead |
-| Gin    | Backend Engineer |
-| Lia    | Frontend Engineer |
-| Eli    | DevSecOps Engineer |
-| Asila  | Security Reviewer |
+| Abduba    | Project Lead |
+| sayed/Abduba    | Backend Engineer |
+| seela    | Frontend Engineer |
+| Asefa    | DevSecOps Engineer |
+| Elis  | Security Reviewer |
 
 ---
 
