@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+<h1>Admin — All Credentials</h1>
+<p class="text-muted" style="margin-bottom:24px;">Viewing all credentials across {{ users | length }} users</p>
+
+<div class="card" style="padding:0; overflow:hidden;">
+  <table>
+    <thead>
+      <tr>
+        <th>Owner</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Expires</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cred, status in creds %}
+      <tr>
+        <td class="text-muted">{{ cred.owner.username }}</td>
+        <td><strong>{{ cred.name }}</strong></td>
+        <td>{{ cred.cred_type }}</td>
+        <td>{{ cred.expires_on.strftime('%b %d, %Y') }}</td>
+        <td>
+          {% if status == 'green' %}
+            <span class="badge badge-green">Safe</span>
+          {% elif status == 'yellow' %}
+            <span class="badge badge-yellow">Expiring soon</span>
+          {% elif status == 'red' %}
+            <span class="badge badge-red">Expired</span>
+          {% else %}
+            <span class="badge badge-rotated">Rotated</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if status != 'rotated' %}
+          <form method="POST" action="/rotate/{{ cred.id }}" style="display:inline;">
+            <button class="btn btn-success" style="padding:5px 14px; font-size:0.8rem;">Mark rotated</button>
+          </form>
+          {% else %}
+            <span class="text-muted">Done</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
