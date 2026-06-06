@@ -6,7 +6,7 @@ terraform {
     }
   }
   backend "gcs" {
-    bucket = "YOUR_TERRAFORM_STATE_BUCKET"   # replace with your GCS bucket
+    bucket = "secured-terraform-state-498301"   # replace with your GCS bucket
     prefix = "secured/app"
   }
 }
@@ -20,7 +20,7 @@ provider "google" {
 data "terraform_remote_state" "infra" {
   backend = "gcs"
   config = {
-    bucket = "YOUR_TERRAFORM_STATE_BUCKET"
+    bucket = "secured-terraform-state-498301"
     prefix = "secured/infrastructure"
   }
 }
