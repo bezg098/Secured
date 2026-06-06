@@ -21,6 +21,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+# ── Create tables on startup (works with gunicorn) ────────────────────────────
+with app.app_context():
+    db.create_all()
+
 # ── Models ────────────────────────────────────────────────────────────────────
 
 class User(db.Model):
@@ -35,7 +39,7 @@ class Credential(db.Model):
     __tablename__ = 'credentials'
     id          = db.Column(db.Integer, primary_key=True)
     name        = db.Column(db.String(120), nullable=False)
-    cred_type   = db.Column(db.String(60), nullable=False)   # e.g. API Key, Password, Certificate
+    cred_type   = db.Column(db.String(60), nullable=False)
     expires_on  = db.Column(db.Date, nullable=False)
     rotated     = db.Column(db.Boolean, default=False)
     user_id     = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
@@ -167,6 +171,4 @@ def admin():
 # ── Init ──────────────────────────────────────────────────────────────────────
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     app.run(host='0.0.0.0', port=8080, debug=False)
