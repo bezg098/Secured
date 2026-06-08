@@ -1,0 +1,61 @@
+flowchart TD
+
+  subgraph DEV["Developer Workspace"]
+    D["Team Member\n(Abduba / Sayed / Seela / Elis / Asefa)"]
+    GP["1. Git Push"]
+    FB["Feature Branch"]
+    D --> GP --> FB
+  end
+
+  FB -->|"2. Create PR"| PR
+
+  subgraph GH["GitHub Repository — bezg098/Secured"]
+    subgraph PIPELINE["GitHub Actions CI/CD Pipeline"]
+      PR["Pull Request to Main"]
+      PR -->|"3. Triggers"| SAST
+      SAST["Snyk Code: SAST\n(Python source scan)"]
+      SAST -->|"Pass"| SCA
+      SCA["Snyk SCA: Dependencies\n(requirements.txt scan)"]
+      SCA -->|"Pass"| CSCAN
+      CSCAN["Snyk Container Scan\n(Docker image scan)"]
+      CSCAN -->|"Pass"| DECISION
+      DECISION{"PR Approved & Merged?\n(Asefa — Security Reviewer)"}
+      DECISION -->|"Yes: Push to Main"| CD
+      CD["CD Pipeline Triggers"]
+    end
+  end
+
+  CD -->|"a. Authenticate"| WIF
+  CD -->|"b. Build & Scan"| DBS
+  CD -->|"c. Deploy"| TFA
+
+  subgraph GCP["Google Cloud Platform — secured-498301"]
+
+    subgraph IAM["Identity & Access Management"]
+      WIF["Workload Identity Federation\n(OIDC — no long-lived keys)"]
+      WIF -->|"Impersonates"| TDSA["GitHub Actions Service Account\ngithub-actions-sa"]
+    end
+
+    subgraph ART["Artifacts & Secrets"]
+      AR["GCP Artifact Registry\nsecured-app:SHA"]
+      SM["Secret Manager\nDB_PASSWORD\nFLASK_SECRET_KEY"]
+    end
+
+    DBS["Docker Build\nsecured-app image"]
+    DBS -->|"Push Secure Image"| AR
+
+    subgraph PROD["Production Infrastructure — cis410-vpc"]
+      CR["GCP Cloud Run\nFlask app — Secured\nPort 8080 — HTTPS"]
+      SQL["GCP Cloud SQL\nPostgreSQL 15\nusers + credentials tables"]
+      CR -->|"Secure Private Connection\n(VPC Connector)"| SQL
+    end
+
+    TFA["gcloud run services update\nsecured-app"]
+    TFA -->|"Deploys new revision"| CR
+    AR -->|"Pulls Image"| CR
+    SM -->|"Fetches Runtime Credentials"| CR
+
+  end
+
+  USER["End User\nBrowser — HTTPS"]
+  USER -->|"HTTPS Request"| CR
